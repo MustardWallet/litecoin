@@ -27,6 +27,7 @@
 #include <sync.h>
 #include <txdb.h>
 #include <txmempool.h>
+#include <undo.h>
 #include <util/strencodings.h>
 #include <util/system.h>
 #include <validation.h>
@@ -44,6 +45,9 @@
 #include <memory>
 #include <mutex>
 #include <condition_variable>
+
+# Quick fix for GetUndoChecked's UndoReadFromDisk
+#include <validation.cpp>
 
 struct CUpdatedBlock
 {
@@ -87,25 +91,6 @@ static int ComputeNextBlockAndDepth(const CBlockIndex* tip, const CBlockIndex* b
     }
     next = nullptr;
     return blockindex == tip ? 1 : -1;
-}
-
-static CBlock GetBlockChecked(const CBlockIndex* pblockindex)
-{
-    CBlock block;
-    if (IsBlockPruned(pblockindex)) {
-        throw JSONRPCError(RPC_MISC_ERROR, "Block not available (pruned data)");
-    }
-
-    if (!ReadBlockFromDisk(block, pblockindex, Params().GetConsensus())) {
-        // Block not found on disk. This could be because we have the block
-        // header in our index but don't have the block (for example if a
-        // non-whitelisted node sends us an unrequested long chain of valid
-        // blocks, we add the headers to our index, but don't accept the
-        // block).
-        throw JSONRPCError(RPC_MISC_ERROR, "Block not found on disk");
-    }
-
-    return block;
 }
 
 static CBlockUndo GetUndoChecked(const CBlockIndex* pblockindex)
@@ -873,7 +858,7 @@ static UniValue getblock(const JSONRPCRequest& request)
             RPCHelpMan{"getblock",
                 "\nIf verbosity is 0, returns a string that is serialized, hex-encoded data for block 'hash'.\n"
                 "If verbosity is 1, returns an Object with information about block <hash>.\n"
-                "If verbosity is 2, returns an Object with information about block <hash> and information about each transaction. \n",
+                "If verbosity is 2, returns an Object with information about block <hash> and information about each transaction. \n"
                 "If verbosity is 3, returns an Object with information about block <hash> and information about each transaction prevout information for inputs. \n",
                 {
                     {"blockhash", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The block hash"},

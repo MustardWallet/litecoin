@@ -7,6 +7,7 @@
 
 #include <amount.h>
 #include <attributes.h>
+#include <undo.h>
 
 #include <string>
 #include <vector>
@@ -19,7 +20,6 @@ struct CMutableTransaction;
 struct PartiallySignedTransaction;
 class uint256;
 class UniValue;
-class CTxUndo;
 
 // core_read.cpp
 CScript ParseScript(const std::string& s);

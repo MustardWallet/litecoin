@@ -18,6 +18,7 @@
 #include <protocol.h> // For CMessageHeader::MessageStartChars
 #include <script/script_error.h>
 #include <sync.h>
+#include <undo.h>
 #include <versionbits.h>
 
 #include <algorithm>
@@ -34,7 +35,6 @@
 
 class CBlockIndex;
 class CBlockTreeDB;
-class CBlockUndo;
 class CChainParams;
 class CCoinsViewDB;
 class CInv;

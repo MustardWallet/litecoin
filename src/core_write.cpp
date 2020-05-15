@@ -11,12 +11,10 @@
 #include <script/standard.h>
 #include <serialize.h>
 #include <streams.h>
-#include <undo.h>
 #include <univalue.h>
+#include <util/system.h>
 #include <util/moneystr.h>
 #include <util/strencodings.h>
-#include <util/system.h>
-
 
 UniValue ValueFromAmount(const CAmount& amount)
 {

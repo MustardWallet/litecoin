@@ -249,9 +249,9 @@ void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry,
     entry.pushKV("vout", vout);
 
     if (txundo != nullptr && !tx.IsCoinBase()) {
-        CAmount fees = amt_total_in - amt_total_out;
-        assert(MoneyRange(fees));
-        entry.pushKV("fee", ValueFromAmount(fees));
+        CAmount fee = amt_total_in - amt_total_out;
+        assert(MoneyRange(fee));
+        entry.pushKV("fee", ValueFromAmount(fee));
     }
 
     if (!hashBlock.IsNull())

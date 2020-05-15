@@ -147,23 +147,22 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* tip, const CBlockIn
     UniValue txs(UniValue::VARR);
 
     if (verbosity >= 2) {
-        const CBlockUndo blockUndo = GetUndoChecked(blockindex);
+        // Looks like this will fail if the block isn't in the main chain:
+        const CBlockUndo block_undo = GetUndoChecked(blockindex);
         for (size_t i = 0; i < block.vtx.size(); ++i) {
 
             const auto& tx = block.vtx.at(i);
-            const CTxUndo* ptr_txundo;
+            // Could (should?) probably just use i instead of IsCoinBase:
+            const CTxUndo* tx_undo = tx->IsCoinBase() ? nullptr : &block_undo.vtxundo.at(i - 1);
+
             UniValue objTx(UniValue::VOBJ);
+            TxToUniv(*tx, uint256(), objTx, true, RPCSerializationFlags(), verbosity, tx_undo);
 
-            if (!tx->IsCoinBase()) {
-                ptr_txundo = &blockUndo.vtxundo.at(i - 1);
-            }
-
-            TxToUniv(*tx, uint256(), objTx, true, RPCSerializationFlags(), verbosity, ptr_txundo);
             txs.push_back(objTx);
         }
     } else {
-        for (size_t i = 0; i < block.vtx.size(); ++i) {
-            const auto& tx = block.vtx.at(i);
+        for(const auto& tx : block.vtx)
+        {
             txs.push_back(tx->GetHash().GetHex());
         }
     }

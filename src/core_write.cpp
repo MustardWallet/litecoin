@@ -217,10 +217,10 @@ void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry,
                     UniValue p(UniValue::VOBJ);
                     p.pushKV("height", (int64_t)prevout.nHeight);
                     p.pushKV("value", ValueFromAmount(prevout.out.nValue));
-                    p.pushKV("coinbase", (bool)prevout.fCoinBase);
-                    UniValue o(UniValue::VOBJ);
-                    ScriptPubKeyToUniv(prevout.out.scriptPubKey, o, true);
-                    p.pushKV("scriptPubKey", o);
+                    p.pushKV("generated", (bool)prevout.fCoinBase);
+                    UniValue s(UniValue::VOBJ);
+                    ScriptPubKeyToUniv(prevout.out.scriptPubKey, s, true);
+                    p.pushKV("scriptPubKey", s);
                     in.pushKV("prevout", p);
                 }
             }
@@ -251,7 +251,7 @@ void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry,
     if (txundo != nullptr && !tx.IsCoinBase()) {
         CAmount fees = amt_total_in - amt_total_out;
         assert(MoneyRange(fees));
-        entry.pushKV("fees", ValueFromAmount(fees));
+        entry.pushKV("fee", ValueFromAmount(fees));
     }
 
     if (!hashBlock.IsNull())

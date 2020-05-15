@@ -34,6 +34,7 @@
 
 class CBlockIndex;
 class CBlockTreeDB;
+class CBlockUndo;
 class CChainParams;
 class CCoinsViewDB;
 class CInv;
@@ -501,5 +502,8 @@ inline bool IsBlockPruned(const CBlockIndex* pblockindex)
 {
     return (fHavePruned && !(pblockindex->nStatus & BLOCK_HAVE_DATA) && pblockindex->nTx > 0);
 }
+
+bool UndoReadFromDisk(CBlockUndo& blockundo, const CBlockIndex* pindex);
+
 
 #endif // BITCOIN_VALIDATION_H

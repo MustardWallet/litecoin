@@ -46,9 +46,6 @@
 #include <mutex>
 #include <condition_variable>
 
-// Quick fix for GetUndoChecked's UndoReadFromDisk
-#include <validation.cpp>
-
 struct CUpdatedBlock
 {
     uint256 hash;
